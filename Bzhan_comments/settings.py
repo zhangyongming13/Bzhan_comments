@@ -29,10 +29,15 @@ DEFAULT_REQUEST_HEADERS = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 }
 
-USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36'
+# USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36'
 
 ITEM_PIPELINES = {
    'Bzhan_comments.pipelines.BzhanCommentsPipeline': 300,
+}
+
+DOWNLOADER_MIDDLEWARES = {
+    'Bzhan_comments.middlewares.RandomUserAgent': 3,
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
 }
 
 # 使用mongodb数据库的设置

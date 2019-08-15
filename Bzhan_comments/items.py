@@ -13,4 +13,7 @@ class BzhanCommentsItem(scrapy.Item):
     comment_date = scrapy.Field()
     comment_text = scrapy.Field()
     score = scrapy.Field()
-    comment_like = scrapy.Field()
+    comment_likes = scrapy.Field()
+    comment_disliked = scrapy.Field()
+    comment_liked = scrapy.Field()
+    last_index_show = scrapy.Field()

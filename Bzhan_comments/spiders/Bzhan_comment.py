@@ -18,12 +18,31 @@ class bzhan_comment(scrapy.Spider):
         comment_data = json.loads(comment_data, encoding='utf8')
         comment_data = comment_data['result']['list']
         for i in range(len(comment_data)):
-            item['comment_author'] = comment_data[i]['author']['uname']
-            item['comment_author'] = time.gmtime(comment_data[i]['ctime'])
-            item['comment_text'] = comment_data[i]['content']
-            item['score'] = comment_data[i]['user_rating']['score']
-            item['comment_like'] = comment_data[i]['likes']
-            yield item
+            # 获取具体数据
+            try:
+                item['comment_author'] = comment_data[i]['author']['uname']
+                item['comment_date'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(comment_data[i]['ctime']))
+                item['comment_text'] = comment_data[i]['content']
+                item['score'] = comment_data[i]['user_rating']['score']
+                try:
+                    item['comment_likes'] = comment_data[i]['likes']
+                except Exception as e:
+                    item['comment_likes'] = 0
+                try:
+                    item['comment_disliked'] = comment_data[i]['disliked']
+                except Exception as e:
+                    item['comment_disliked'] = 0
+                try:
+                    item['comment_liked'] = comment_data[i]['liked']
+                except Exception as e:
+                    item['comment_liked'] = 0
+                try:
+                    item['last_index_show'] = comment_data[i]['user_season']['last_index_show']
+                except Exception as e:
+                    item['last_index_show'] = ""
+                yield item
+            except Exception as e:
+                print('缺少关键数据，该评论数据放弃')
         try:
             cursor = comment_data[-1]['cursor']
             time.sleep(random.randint(4, 14) + random.randint(7, 17) / 10)
