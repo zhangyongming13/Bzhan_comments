@@ -44,7 +44,9 @@ DOWNLOADER_MIDDLEWARES = {
 MONGODB_HOST = '192.168.1.247'
 MONGODB_DBNAME = 'Bzhan_comment'
 MONGODB_PORT = 27017
-MONGODB_SHEETNAME = 'Bzhan_comment'
+MONGODB_SHEETNAME_1 = 'Bzhan_comment'
+MONGODB_SHEETNAME_2 = 'Undestroyed_Diamonds'
+MONGODB_SHEETNAME_3 = 'Guimiezhiren'
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay

@@ -8,7 +8,7 @@ from Bzhan_comments.items import BzhanCommentsItem
 class bzhan_comment(scrapy.Spider):
     name = "bzhan_comment"
     allowed_domains = ["bilibili.com"]
-    start_urls = ['https://bangumi.bilibili.com/review/web_api/short/list?media_id=135652&folded=0&page_size=20&sort=0']
+    start_urls = ['https://bangumi.bilibili.com/review/web_api/short/list?media_id=22718131&folded=0&page_size=20&sort=0']
 
     def parse(self, response):
         item = BzhanCommentsItem()

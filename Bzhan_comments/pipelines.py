@@ -13,7 +13,7 @@ class BzhanCommentsPipeline(object):
         host = settings['MONGODB_HOST']
         port = settings['MONGODB_PORT']
         db_name = settings['MONGODB_DBNAME']
-        sheet_name = settings['MONGODB_SHEETNAME']
+        sheet_name = settings['MONGODB_SHEETNAME_1']
 
         # 初始化mongodb连接并返回
         mongo_client = pymongo.MongoClient(host=host, port=port)
