@@ -6,7 +6,7 @@ from PIL import Image
 from wordcloud import WordCloud, ImageColorGenerator
 
 
-image_path = 'time3.jpeg'
+image_path = 'timg.jpeg'
 
 
 class Analycis():
@@ -25,15 +25,10 @@ class Analycis():
         self.mongo_object_2 = mongo_db[sheet_name_2]
         self.mongo_object_3 = mongo_db[sheet_name_3]
 
+    # 从数据库中获取番剧已经爬取的评论
     def get_data(self, field):
         data = ''
-        # data_gen_1 = self.mongo_object_1.find({}, {'_id':0, field:1})
-        # data_gen_2 = self.mongo_object_2.find({}, {'_id':0, field:1})
         data_gen_3 = self.mongo_object_3.find({}, {'_id':0, field:1})
-        # for i in data_gen_1:
-        #     data += i['comment_text'] + '。'
-        # for i in data_gen_2:
-        #     data += i['comment_text'] + '。'
         for i in data_gen_3:
             data += i['comment_text'] + '。'
         return data
@@ -47,6 +42,7 @@ class Analycis():
                 stopwords.append(word.strip())
         return stopwords
 
+    # 生成词云并保存到本地
     def get_comments_wordcloud(self):
         data = self.get_data('comment_text')
 
@@ -56,13 +52,6 @@ class Analycis():
 
         # 加载停止词
         stop_words = self.load_stopwords()
-        # move_stopwords_text = list(set(data).difference(set(stop_words)))
-        # move_stopwords_text = ''
-        # for word in text:
-        #     if word not in stop_words:
-        #         if word != '\t' and '\n':
-        #             move_stopwords_text += word
-        # move_stopwords_text = ' '.join(move_stopwords_text)
 
         # 中文的话要设置中文字体，不然词云会乱码
         font_path = 'SourceHanSansCN-Regular.ttf'
