@@ -11,9 +11,16 @@ class bzhan_comment(scrapy.Spider):
     urlPrefix = 'https://api.bilibili.com/pgc/review/short/list?media_id=22718131&ps=20&sort=0'
     start_urls = []
     with open('startUrl.txt', 'r', encoding='utf8') as f:
-        start_urls.append(f.read().split('\n')[-2])
+        allUrl = f.read().split('\n')[0:-1]
+        # 判断最后一个url（即将要进行爬取的startUrl）是否在前面已经出现过，出现过就是重复的了
+        if allUrl[-1] in allUrl[0:-2]:
+            print('重复爬取，结束！')
+        else:
+            start_urls.append(allUrl[-1])
 
     def parse(self, response):
+        # 记录爬取是否重复了，重复的话结束爬取
+        flag = 0
         item = BzhanCommentsItem()
         comment_data = response.text
 
@@ -24,9 +31,13 @@ class bzhan_comment(scrapy.Spider):
         for i in range(len(comment_data)):
             # 获取具体数据
             try:
-                item['comment_author'] = comment_data[i]['author']['uname']
+                item['comment_author_mid'] = comment_data[i]['author']['mid']
+                item['comment_author_avatar'] = comment_data[i]['author']['avatar']
+                item['comment_author_name'] = comment_data[i]['author']['uname']
                 item['comment_date'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(comment_data[i]['ctime']))
                 item['comment_text'] = comment_data[i]['content']
+                item['comment_mid'] = comment_data[i]['mid']
+                item['media_id'] = comment_data[i]['media_id']
                 item['score'] = comment_data[i]['score']
                 try:
                     item['comment_likes'] = comment_data[i]['stat']['likes']
@@ -51,11 +62,19 @@ class bzhan_comment(scrapy.Spider):
         try:
             time.sleep(random.randint(4, 14) + random.randint(7, 17) / 10)
             url = self.urlPrefix + '&cursor=' + cursor
+            # 判断该url是否已经爬取过了
+            with open('startUrl.txt', 'r', encoding='utf8') as f:
+                allUrl = f.read().split('\n')[0:-1]
+                if url in allUrl:
+                    flag += 1
             # 记录下一次要爬取的url，保证意外中断之后从中断的位置开始爬取
             with open('startUrl.txt', 'a', encoding='utf8') as f:
                 f.write(url + '\n')
-            print('爬取：' + url)
-            yield scrapy.Request(url, callback=self.parse)
+            if flag == 0:
+                print('爬取：' + url)
+                yield scrapy.Request(url, callback=self.parse)
+            else:
+                print('重复爬取，爬取结束！')
         except Exception as e:
             print(e)
             print('爬取完毕！')

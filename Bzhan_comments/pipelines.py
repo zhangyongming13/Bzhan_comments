@@ -26,7 +26,7 @@ class BzhanCommentsPipeline(object):
             # 每一个评论数据插入mongodb数据库
             mongodb_data_dict = dict(item)
             self.mongo_object.insert(mongodb_data_dict)
-            print('%s 的评论保存到mongodb数据库成功！' % item['comment_author'])
+            print('%s 的评论保存到mongodb数据库成功！' % item['comment_author_name'])
         except Exception as e:
             print('保存到mongodb数据库失败，原因：' + str(e))
         return item

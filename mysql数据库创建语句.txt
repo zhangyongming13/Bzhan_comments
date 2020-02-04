@@ -1,0 +1,34 @@
+create table
+if
+	not exists `bzhan_comment`(
+		`comment_mid` bigint UNSIGNED not null,
+		`media_id` bigint unsigned not null,
+		`comment_author_mid` bigint unsigned,
+		`comment_author_avatar` varchar (100),
+		`comment_author_name` varchar (100) not null,
+		`comment_date` datetime,
+		`comment_text` text,
+		`score` int unsigned,
+		`comment_likes` int unsigned default 0,
+		`comment_disliked` int unsigned default 0,
+		`comment_liked` int unsigned default 0,
+		`last_index_show` varchar (50),
+		primary key (`comment_mid`, `media_id`),
+		foreign key (`media_id`) references `media` (`media_id`),
+		check (`score` >= 0 and `score` <= 10)
+	) engine = innodb default charset = utf8;
+
+create table
+if
+	not exists `media`(
+		`media_id` bigint unsigned not null,
+		`media_name` varchar (100),
+		primary key (`media_id`)
+	)engine = innodb default charset = utf8;
+
+INSERT INTO media ( `media_id`, `media_name` )
+VALUES
+	( 22718131, '鬼灭之刃' );
+
+GRANT ALL PRIVILEGES ON bzhan_comment.* TO zhang @'localhost' IDENTIFIED BY '19940327';
+FLUSH PRIVILEGES;
