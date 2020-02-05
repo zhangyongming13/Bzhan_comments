@@ -48,6 +48,12 @@ MONGODB_SHEETNAME_1 = 'Bzhan_comment'
 MONGODB_SHEETNAME_2 = 'Undestroyed_Diamonds'
 MONGODB_SHEETNAME_3 = 'Guimiezhiren'
 
+# 使用mysql数据库的设置
+MYSQL_HOST = '127.0.0.1'
+MYSQL_USER = 'zhang'
+MYSQL_PASSWD = '19940327'
+MYSQL_DB = 'bzhan_comment'
+
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
