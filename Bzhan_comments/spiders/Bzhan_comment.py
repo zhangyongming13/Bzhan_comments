@@ -8,7 +8,7 @@ from Bzhan_comments.items import BzhanCommentsItem
 class bzhan_comment(scrapy.Spider):
     name = "bzhan_comment"
     allowed_domains = ["bilibili.com"]
-    urlPrefix = 'https://api.bilibili.com/pgc/review/short/list?media_id=22718131&ps=20&sort=0'
+    urlPrefix = 'https://api.bilibili.com/pgc/review/short/list?media_id='
     start_urls = []
     with open('startUrl.txt', 'r', encoding='utf8') as f:
         allUrl = f.read().split('\n')[0:-1]
@@ -21,6 +21,7 @@ class bzhan_comment(scrapy.Spider):
     def parse(self, response):
         # 记录爬取是否重复了，重复的话结束爬取
         flag = 0
+        media_id = ''
         item = BzhanCommentsItem()
         comment_data = response.text
 
@@ -38,6 +39,7 @@ class bzhan_comment(scrapy.Spider):
                 item['comment_text'] = comment_data[i]['content']
                 item['comment_mid'] = comment_data[i]['mid']
                 item['media_id'] = comment_data[i]['media_id']
+                media_id = str(comment_data[i]['media_id'])
                 item['score'] = comment_data[i]['score']
                 try:
                     item['comment_likes'] = comment_data[i]['stat']['likes']
@@ -60,8 +62,8 @@ class bzhan_comment(scrapy.Spider):
                 print(e)
                 print('缺少关键数据，该评论数据放弃')
         try:
-            time.sleep(random.randint(4, 14) + random.randint(7, 17) / 10)
-            url = self.urlPrefix + '&cursor=' + cursor
+            time.sleep(random.randint(4, 10) + random.randint(0, 9) / 10)
+            url = self.urlPrefix + media_id + '&ps=20&sort=0&cursor=' + cursor
             # 判断该url是否已经爬取过了
             with open('startUrl.txt', 'r', encoding='utf8') as f:
                 allUrl = f.read().split('\n')[0:-1]

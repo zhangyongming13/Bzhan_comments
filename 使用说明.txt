@@ -1,0 +1,3 @@
+（1）爬取番剧短评数据：将其实短评链接写到startUrl.txt中。样例：https://www.zymblog.top/blog/157。然后scrapy crawl bzhan_comment -s LOG_FILE=all.log
+（2）将mongo数据去重转移到mysql数据库，前提是mysql的media数据库存有media_id对应的medianame，然后运行mongoTomysql.py。
+（3）生成词云图片，将底图放到词云相关数据的文件夹，并重命名，格式为 番剧名.jpeg。然后运行ciyun_analycis.py文件，输入番剧名即可。

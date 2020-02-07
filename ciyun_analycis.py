@@ -1,12 +1,11 @@
 import pymongo
+import pymysql
 import jieba
 import numpy
+import math
 from Bzhan_comments import settings
 from PIL import Image
 from wordcloud import WordCloud, ImageColorGenerator
-
-
-image_path = 'timg.jpeg'
 
 
 class Analycis():
@@ -25,12 +24,25 @@ class Analycis():
         self.mongo_object_2 = mongo_db[sheet_name_2]
         self.mongo_object_3 = mongo_db[sheet_name_3]
 
+        # 初始化mysql连接并返回
+        mysqlHost = settings.MYSQL_HOST
+        mysqlUser = settings.MYSQL_USER
+        mysqlPasswd = settings.MYSQL_PASSWD
+        mysqlDb = settings.MYSQL_DB
+        self.connection = pymysql.connect(host=mysqlHost, user=mysqlUser, passwd=mysqlPasswd, db=mysqlDb)
+        self.cursor = self.connection.cursor()
+
     # 从数据库中获取番剧已经爬取的评论
-    def get_data(self, field):
+    def get_data(self, media_id):
         data = ''
-        data_gen_3 = self.mongo_object_3.find({}, {'_id':0, field:1})
-        for i in data_gen_3:
-            data += i['comment_text'] + '。'
+        sql = "select comment_text from bzhan_comment where media_id = %s" % (media_id)
+        self.cursor.execute(sql)
+        result = self.cursor.fetchall()
+        for i in result:
+            data += str(i[0]) + '。'
+        # data_gen_3 = self.mongo_object_3.find({}, {'_id':0, field:1})
+        # for i in data_gen_3:
+        #     data += i['comment_text'] + '。'
         return data
 
     # 从分词文件中加载分词
@@ -42,13 +54,37 @@ class Analycis():
                 stopwords.append(word.strip())
         return stopwords
 
+    # 图片大小不一样的时候以image2为准，对image1裁剪
+    def imageOverlay(self, image1, image2):
+        result = image2
+        image1 = Image.open(image1)
+        image2 = Image.open(image2)
+        # 进行裁剪操作
+        image1 = image1.resize((image2.width, image2.height), Image.ANTIALIAS)
+        # 进行两张图片的叠加
+        newImage = Image.blend(image1, image2, (math.sqrt(5) - 1) / 2)
+        newImage.save(result)
+
+
     # 生成词云并保存到本地
     def get_comments_wordcloud(self):
-        data = self.get_data('comment_text')
+        print('请输入需要生产词云的番剧名称：')
+        while True:
+            fanOperaname = str(input())
+            sql = "select media_id from media where media_name = '%s'" % (fanOperaname)
+            self.cursor.execute(sql)
+            temp = self.cursor.fetchall()
+            if len(temp) != 0:
+                result = temp[0][0]
+                break
+            else:
+                print('输入番剧名称有错，请重新输入：')
+        image_path = '词云相关数据/' + str(fanOperaname) + '.jpeg'
+        data = self.get_data(result)
 
         # 用jieba进行精确分词，返回list
         data = jieba.lcut(data, cut_all=False)
-        text = ' '.join(data)
+        text = '。'.join(data)
 
         # 加载停止词
         stop_words = self.load_stopwords()
@@ -81,9 +117,12 @@ class Analycis():
         print(sort[:50])
         wc.recolor(color_func=img_colors)
 
-        ciyun_image = image_path.split('.')[0] + '.png'
+        ciyun_image = str(image_path.split('.')[0] + '.png')
 
         wc.to_file(ciyun_image)
+
+        # 将词云图片和原图片进行叠加操作
+        self.imageOverlay(image_path, ciyun_image)
         return True
 
 
