@@ -40,9 +40,6 @@ class Analycis():
         result = self.cursor.fetchall()
         for i in result:
             data += str(i[0]) + '。'
-        # data_gen_3 = self.mongo_object_3.find({}, {'_id':0, field:1})
-        # for i in data_gen_3:
-        #     data += i['comment_text'] + '。'
         return data
 
     # 从分词文件中加载分词

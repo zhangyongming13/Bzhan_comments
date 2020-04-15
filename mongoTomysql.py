@@ -46,14 +46,22 @@ class mongoTomysql():
         print('%s条数据即将写入mysql数据库！' % len(dataList))
         try:
             self.cursor.executemany(r'insert into bzhan_comment values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', dataList)
-            self.connection.commit()
-            print('评论数据写入mysql成功！')
         except Exception as e:
             print('因为%s评论数据写入mysql数据库失败！数据库进行回滚操作' % e)
             # 回滚数据库
             self.connection.rollback()
+        else:
+            self.connection.commit()
+            print('评论数据写入mysql成功！')
         finally:
             self.connection.close()
+        # 进行mongo数据删除
+        try:
+            self.mongo_object.drop()
+        except Exception as e:
+            print('因为%s mongo数据库内数据删除失败！' % e)
+        else:
+            print('mongo数据库内数据删除成功！')
 
 
 if __name__ == '__main__':
