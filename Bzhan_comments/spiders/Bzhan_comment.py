@@ -4,6 +4,25 @@ import time
 import random
 from Bzhan_comments.items import BzhanCommentsItem
 from mongoTomysql import mongoTomysql
+from Bzhan_comments import settings
+
+
+def get_url_delete_url(file_path):
+    """
+    从文件中读取爬取的url，然后删除掉url的行
+    :param file_path:
+    :return: 读取的url
+    """
+    with open(file_path, 'r', encoding='utf8') as f:
+        data = f.readlines()
+        if data:
+            url = data[0].split(' ')[-1].strip('\n')
+            data = data[1:]
+            with open(file_path, 'w', encoding='utf8') as wf:
+                wf.writelines(data)
+        else:
+            return None
+    return url
 
 
 class bzhan_comment(scrapy.Spider):
@@ -16,7 +35,12 @@ class bzhan_comment(scrapy.Spider):
         allUrl = f.read().split('\n')[0:-1]
         # 判断最后一个url（即将要进行爬取的startUrl）是否在前面已经出现过，出现过就是重复的了
         if allUrl[-1] in allUrl[0:-2]:
-            print('重复爬取，结束！')
+            # 判断爬取.txt文件中是否有待爬取的
+            url_from_text = get_url_delete_url(settings.SPIDER_TEXT)
+            if url_from_text:
+                start_urls.append(url_from_text)
+            else:
+                print('重复爬取并且爬取.txt文件中没有待爬取的url！')
         else:
             start_urls.append(allUrl[-1])
 
@@ -77,7 +101,12 @@ class bzhan_comment(scrapy.Spider):
                 with open('startUrl.txt', 'r', encoding='utf8') as f:
                     allUrl = f.read().split('\n')[0:-1]
                     if url in allUrl:
-                        flag += 1
+                        # 判断爬取.txt文件中是否有待爬取的
+                        url_from_text = get_url_delete_url(settings.SPIDER_TEXT)
+                        if url_from_text:
+                            url = url_from_text
+                        else:
+                            flag += 1
                 # 记录下一次要爬取的url，保证意外中断之后从中断的位置开始爬取
                 with open('startUrl.txt', 'a', encoding='utf8') as f:
                     f.write(url + '\n')
@@ -85,7 +114,7 @@ class bzhan_comment(scrapy.Spider):
                 print('爬取：' + url)
                 yield scrapy.Request(url, callback=self.parse)
             else:
-                print('重复爬取，爬取结束！')
+                print('重复爬取并且爬取.txt文件中没有待爬取的url！')
                 self.mongoTomysql.saveDatatomysql()
         except Exception as e:
             print(e)

@@ -5,7 +5,9 @@ from Bzhan_comments import settings
 # 从文本文件中读取media_name和media_id数据并写入mysql数据库
 class SaveNameMediaIdToMysql():
     def __init__(self):
-        # 初始化mysql连接并返回
+        """
+        初始化mysql连接并返回
+        """
         mysqlHost = settings.MYSQL_HOST
         mysqlUser = settings.MYSQL_USER
         mysqlPasswd = settings.MYSQL_PASSWD
@@ -16,6 +18,11 @@ class SaveNameMediaIdToMysql():
         self.data = []
 
     def get_data(self, file_path):
+        """
+        从文本文件中获取番剧的名称，id等信息
+        :param file_path: 文件路径
+        :return: None
+        """
         with open(file_path, 'r', encoding='utf8') as f:
             datas = f.read().split('\n')[:-1]
         for data in datas:
@@ -25,8 +32,12 @@ class SaveNameMediaIdToMysql():
             self.data.append(temp)
 
     def sava_to_mysql(self):
+        """
+        将番剧数据写入到mysql数据库中的media表中
+        :return: None
+        """
         try:
-            self.cursor.executemany(r'insert into media values(%s, %s)', self.data)
+            self.cursor.executemany(r'insert ignore into media values(%s, %s)', self.data)
             self.connection.commit()
             print('写入成功！')
         except Exception as e:
@@ -37,6 +48,6 @@ class SaveNameMediaIdToMysql():
 
 
 if __name__ == '__main__':
-    savenamemediaidmysql = SaveNameMediaIdToMysql()
-    savenamemediaidmysql.get_data('爬取.txt')
-    savenamemediaidmysql.sava_to_mysql()
+    save_name_media_id_to_mysql = SaveNameMediaIdToMysql()
+    save_name_media_id_to_mysql.get_data(settings.SPIDER_TEXT)
+    save_name_media_id_to_mysql.sava_to_mysql()
