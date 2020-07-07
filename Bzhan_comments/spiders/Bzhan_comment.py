@@ -2,6 +2,7 @@ import scrapy
 import json
 import time
 import random
+import pymysql
 from Bzhan_comments.items import BzhanCommentsItem
 from mongoTomysql import mongoTomysql
 from Bzhan_comments import settings
@@ -44,6 +45,27 @@ class bzhan_comment(scrapy.Spider):
         else:
             start_urls.append(allUrl[-1])
 
+    # 初始化mysql连接并返回
+    mysqlHost = settings.MYSQL_HOST
+    mysqlUser = settings.MYSQL_USER
+    mysqlPasswd = settings.MYSQL_PASSWD
+    mysqlDb = settings.MYSQL_DB
+    connection = pymysql.connect(host=mysqlHost, user=mysqlUser, passwd=mysqlPasswd, db=mysqlDb)
+    mysql_cursor = connection.cursor()
+
+    def judge_exist(self, comment_mid, media_id):
+        """
+        判断评论是否已在数据库中，通过comment_mid和media_id两个主键确认
+        :param comment_mid: 评论的id即评论的创建用户
+        :param media_id: 被评论番剧的番剧id
+        :return: 评论是否已经在数据库中的结果
+        """
+        # 参数化查询可以避免sql注入问题
+        sql = r'select comment_author_mid from bzhan_comment where media_id = %s and comment_mid = %s'
+        self.mysql_cursor.execute(sql, (media_id, comment_mid))
+        result = self.mysql_cursor.fetchall()
+        return result
+
     def parse(self, response):
         # 记录爬取是否重复了，重复的话结束爬取
         flag = 0
@@ -84,7 +106,9 @@ class bzhan_comment(scrapy.Spider):
                     item['last_index_show'] = comment_data[i]['progress']
                 except Exception as e:
                     item['last_index_show'] = ""
-                yield item
+                # 判断该评论是否已经存在
+                if not self.judge_exist(item['comment_mid'], item['media_id']):
+                    yield item
             except Exception as e:
                 print(e)
                 longTimesleep += 1
@@ -100,6 +124,7 @@ class bzhan_comment(scrapy.Spider):
                 # 判断该url是否已经爬取过了
                 with open('startUrl.txt', 'r', encoding='utf8') as f:
                     allUrl = f.read().split('\n')[0:-1]
+                    # 该url已经爬取过了
                     if url in allUrl:
                         # 判断爬取.txt文件中是否有待爬取的
                         url_from_text = get_url_delete_url(settings.SPIDER_TEXT)

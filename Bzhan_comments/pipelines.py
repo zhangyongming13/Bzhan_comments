@@ -15,9 +15,14 @@ class BzhanCommentsPipeline(object):
         port = settings['MONGODB_PORT']
         db_name = settings['MONGODB_DBNAME']
         sheet_name = settings['MONGODB_SHEETNAME_1']
+        mongo_auth_db = settings['MONGODB_AUTHDB']
+        mongo_user = settings['MONGODB_USER']
+        mongo_passwd = settings['MONGODB_PASSWD']
 
         # 初始化mongodb连接并返回
         mongo_client = pymongo.MongoClient(host=host, port=port)
+        mongo_db = mongo_client[mongo_auth_db]
+        mongo_db.authenticate(mongo_user, mongo_passwd)
         mongo_db = mongo_client[db_name]
         self.mongo_object = mongo_db[sheet_name]
 

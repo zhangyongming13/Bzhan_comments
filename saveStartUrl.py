@@ -3,6 +3,9 @@ from Bzhan_comments import settings
 
 
 class SaveStartUrl(object):
+    """
+    保存爬取过的番剧评论url（startUrl.txt）到数据库中的comment_url表
+    """
     def __init__(self):
         self.result = [] # 用来保存读取的爬取路径的数据
         # 初始化mysql链接

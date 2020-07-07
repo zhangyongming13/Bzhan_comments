@@ -1,3 +1,4 @@
-（1）将番剧名 空格 评论连接开头 格式写入到爬取.txt中，然后运行save_fanju_name_media.py将番剧信息写入到media表中
-（2）然后scrapy crawl bzhan_comment -s LOG_FILE=all.log
-（3）生成词云图片，将底图放到词云相关数据的文件夹，并重命名，格式为 番剧名.jpeg。然后运行ciyun_analycis.py文件，输入番剧名即可。
+（1）运行getFolkOpera.py将未爬取评论的番剧保存到meida表中
+（2）运行saveLinkSpiderTxt.py从meida表中未爬取comment的番剧title和url保存到爬取.txt文件中
+（3）然后scrapy crawl bzhan_comment -s LOG_FILE=all.log进行爬取
+（4）生成词云图片，将底图放到词云相关数据的文件夹，并重命名，格式为 番剧名.jpeg。然后运行ciyun_analycis.py文件，输入番剧名即可。

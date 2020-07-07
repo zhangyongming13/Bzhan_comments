@@ -9,18 +9,17 @@ class mongoTomysql():
         mongoHost = settings.MONGODB_HOST
         mongoport = settings.MONGODB_PORT
         mongoDbname = settings.MONGODB_DBNAME
+        mongoAuthDb = settings.MONGODB_AUTHDB
+        mongoUser = settings.MONGODB_USER
+        mongoPasswd = settings.MONGODB_PASSWD
         mongoSheetname = settings.MONGODB_SHEETNAME_1
         mongo_client = pymongo.MongoClient(host=mongoHost, port=mongoport)
+        mongo_db = mongo_client[mongoAuthDb]
+        mongo_db.authenticate(mongoUser, mongoPasswd)
         mongo_db = mongo_client[mongoDbname]
         self.mongo_object = mongo_db[mongoSheetname]
 
-        # 初始化mysql连接并返回
-        mysqlHost = settings.MYSQL_HOST
-        mysqlUser = settings.MYSQL_USER
-        mysqlPasswd= settings.MYSQL_PASSWD
-        mysqlDb = settings.MYSQL_DB
-        self.connection = pymysql.connect(host=mysqlHost, user=mysqlUser, passwd=mysqlPasswd, db=mysqlDb)
-        self.cursor = self.connection.cursor()
+
 
     def getDataformongo(self):
         """
@@ -41,16 +40,23 @@ class mongoTomysql():
                     i['comment_likes'], i['comment_disliked'], i['comment_liked'], i['last_index_show'])
             dataList.append(temp)
         print('%s条数据即将写入mysql数据库！' % len(dataList))
+        # 初始化mysql连接并返回
+        mysqlHost = settings.MYSQL_HOST
+        mysqlUser = settings.MYSQL_USER
+        mysqlPasswd = settings.MYSQL_PASSWD
+        mysqlDb = settings.MYSQL_DB
+        connection = pymysql.connect(host=mysqlHost, user=mysqlUser, passwd=mysqlPasswd, db=mysqlDb)
+        cursor = connection.cursor()
         try:
-            self.cursor.executemany(r'insert ignore into bzhan_comment values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', dataList)
+            cursor.executemany(r'insert ignore into bzhan_comment values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', dataList)
         except Exception as e:
             print('因为%s评论数据写入mysql数据库失败！数据库进行回滚操作' % e)
             # 回滚数据库
-            self.connection.rollback()
+            connection.rollback()
         else:
-            self.connection.commit()
-            if self.connection.affected_rows() > 0:
-                print('%d行评论数据写入mysql成功！' % self.connection.affected_rows())
+            connection.commit()
+            if connection.affected_rows() > 0:
+                print('%d行评论数据写入mysql成功！' % len(dataList))
             # 进行mongo数据删除
             try:
                 self.mongo_object.drop()
@@ -59,7 +65,7 @@ class mongoTomysql():
             else:
                 print('mongo数据库内数据删除成功！')
         finally:
-            self.connection.close()
+            connection.close()
 
 
 if __name__ == '__main__':
