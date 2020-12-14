@@ -24,7 +24,7 @@ SPIDER_TEXT = '爬取.txt'
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+# CONCURRENT_REQUESTS = 32
 DOWNLOAD_DELAY = 3
 DEFAULT_REQUEST_HEADERS = {
     'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36',
@@ -58,6 +58,7 @@ MYSQL_HOST = '127.0.0.1'
 MYSQL_USER = 'zhang'
 MYSQL_PASSWD = 'phoenixnash13'
 MYSQL_DB = 'bzhan_comment'
+START_URL = '202007290002ALL.txt'
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay

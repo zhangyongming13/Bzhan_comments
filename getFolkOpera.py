@@ -48,7 +48,8 @@ class GetFanJuData(object):
         :param folk_opera_media_id:
         :return: mysql数据库查询结果
         """
-        self.cursor.execute(r'select media_title from media where media_id = %s' % folk_opera_media_id)
+        sql = r'select media_title from media where media_id = %s'
+        self.cursor.execute(sql, folk_opera_media_id)
         result = self.cursor.fetchall()
         return result
 
@@ -70,9 +71,6 @@ class GetFanJuData(object):
                 title = folk_oprea['title']  # 番剧名称
                 # 已经存在的就尝试更新，因为随着时间的推移可能会出现番剧is_finish从0
                 # 变为1的情况，所以所有都要获取
-                # if self.judge_exist(media_id):
-                #     print('%s已在数据库中，不需要爬取！' % title)
-                #     continue
                 badge = folk_oprea['badge']  # 是否会员专享
                 cover = folk_oprea['cover']  # 番剧封面链接
                 index_show = folk_oprea['index_show']  # 番剧有多少话

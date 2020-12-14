@@ -5,7 +5,9 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymongo
+import pymysql
 from scrapy.utils.project import get_project_settings
+
 settings = get_project_settings()
 
 
@@ -33,5 +35,13 @@ class BzhanCommentsPipeline(object):
             self.mongo_object.insert(mongodb_data_dict)
             print('%s 的评论保存到mongodb数据库成功！' % item['comment_author_name'])
         except Exception as e:
-            print('保存到mongodb数据库失败，原因：' + str(e))
+            print('保存到mongodb数据库失败，原因：%s'.format(e))
+        # try:
+        #     sql = 'insert ignore into bzhan_comment values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        #     self.cursor.execute(sql, (
+        #     item['comment_mid'], item['media_id'], item['comment_author_mid'], item['comment_author_avatar'],
+        #     item['comment_author_name'], item['comment_date'], item['comment_text'], item['score'],
+        #     item['comment_likes'], item['comment_disliked'], item['comment_liked'], item['last_index_show']))
+        # except Exception as e:
+        #     print('保存到mysql数据库失败，原因：%s'.format(e))
         return item

@@ -19,8 +19,6 @@ class mongoTomysql():
         mongo_db = mongo_client[mongoDbname]
         self.mongo_object = mongo_db[mongoSheetname]
 
-
-
     def getDataformongo(self):
         """
         读取mongodb中的数据
