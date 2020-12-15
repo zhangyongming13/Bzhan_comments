@@ -14,15 +14,11 @@ class Analycis():
         port = settings.MONGODB_PORT
         db_name = settings.MONGODB_DBNAME
         sheet_name_1 = settings.MONGODB_SHEETNAME_1
-        sheet_name_2 = settings.MONGODB_SHEETNAME_2
-        sheet_name_3 = settings.MONGODB_SHEETNAME_3
 
         # 初始化mongodb连接并返回
         mongo_client = pymongo.MongoClient(host=host, port=port)
         mongo_db = mongo_client[db_name]
         self.mongo_object_1 = mongo_db[sheet_name_1]
-        self.mongo_object_2 = mongo_db[sheet_name_2]
-        self.mongo_object_3 = mongo_db[sheet_name_3]
 
         # 初始化mysql连接并返回
         mysqlHost = settings.MYSQL_HOST

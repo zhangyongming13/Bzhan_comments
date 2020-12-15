@@ -9,6 +9,8 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
+import os
+
 BOT_NAME = 'Bzhan_comments'
 
 SPIDER_MODULES = ['Bzhan_comments.spiders']
@@ -43,22 +45,21 @@ DOWNLOADER_MIDDLEWARES = {
 }
 
 # 使用mongodb数据库的设置
-MONGODB_HOST = '127.0.0.1'
-MONGODB_DBNAME = 'Bzhan_comment'
-MONGODB_PORT = 27017
-MONGODB_PASSWD = 'phoenixnash13'
-MONGODB_AUTHDB= 'admin'
-MONGODB_USER = 'zhang'
-MONGODB_SHEETNAME_1 = 'Bzhan_comment'
-MONGODB_SHEETNAME_2 = 'Undestroyed_Diamonds'
-MONGODB_SHEETNAME_3 = 'Guimiezhiren'
+MONGODB_HOST = str(os.getenv('MONGODB_HOST'))
+MONGODB_DBNAME = str(os.getenv('MONGODB_DBNAME'))
+MONGODB_PORT = int(os.getenv('MONGODB_PORT'))
+MONGODB_PASSWD = str(os.getenv('MONGODB_PASSWD'))
+MONGODB_AUTHDB= str(os.getenv('MONGODB_AUTHDB'))
+MONGODB_USER = str(os.getenv('MONGODB_USER'))
+MONGODB_SHEETNAME_1 = str(os.getenv('MONGODB_SHEETNAME_1'))
 
 # 使用mysql数据库的设置
-MYSQL_HOST = '127.0.0.1'
-MYSQL_USER = 'zhang'
-MYSQL_PASSWD = 'phoenixnash13'
-MYSQL_DB = 'bzhan_comment'
-START_URL = '202007290002ALL.txt'
+MYSQL_HOST = str(os.getenv('MYSQL_HOST'))
+MYSQL_USER = str(os.getenv('MYSQL_USER'))
+MYSQL_PASSWD = str(os.getenv('MYSQL_PASSWD'))
+MYSQL_DB = str(os.getenv('MYSQL_DB'))
+
+START_URL = str(os.getenv('START_URL'))
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
