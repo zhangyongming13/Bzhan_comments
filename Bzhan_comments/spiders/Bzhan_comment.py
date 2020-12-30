@@ -5,7 +5,7 @@ import random
 import pymysql
 import os
 from Bzhan_comments.items import BzhanCommentsItem
-from mongoTomysql import mongoTomysql
+from tool.mongoTomysql import mongoTomysql
 from Bzhan_comments import settings
 
 
