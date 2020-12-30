@@ -1,5 +1,5 @@
 （1）运行getFolkOpera.py将未爬取评论的番剧保存到meida表中
-（2）运行saveLinkSpiderTxt.py从meida表中未爬取comment的番剧title和url保存到爬取.txt文件中，可以选择全量爬取（更新已有番剧的短评）还是非
+（2）运行saveLinkSpiderTxt.py从meida表中未爬取comment的番剧title和url保存到folkCommentUrl.txt文件中，可以选择全量爬取（更新已有番剧的短评）还是非
 全量爬取。
 （3）然后scrapy crawl bzhan_comment -s LOG_FILE=all.log进行爬取。选择全量爬取的时候需要修改settings.py文件中START_URL从
 startUrl.txt修改为执行成时间ALL.txt（比如202007282353ALL.txt）。选择非全量爬取的时候需要先运行merga_spidered_url_to_start_url.py

@@ -38,21 +38,21 @@ class bzhan_comment(scrapy.Spider):
             allUrl = f.read().split('\n')[0:-1]
             # 判断最后一个url（即将要进行爬取的startUrl）是否在前面已经出现过，出现过就是重复的了
             if allUrl[-1] in allUrl[0:-2]:
-                # 判断爬取.txt文件中是否有待爬取的
+                # 判断folkCommentUrl.txt文件中是否有待爬取的
                 url_from_text = get_url_delete_url(settings.SPIDER_TEXT)
                 if url_from_text:
                     start_urls.append(url_from_text)
                 else:
-                    print('重复爬取并且爬取.txt文件中没有待爬取的url！')
+                    print('重复爬取并且folkCommentUrl.txt文件中没有待爬取的url！')
             else:
                 start_urls.append(allUrl[-1])
-    # start_url文件不存在，直接从爬取.txt文件中判断是否有待爬取番剧
+    # start_url文件不存在，直接从folkCommentUrl.txt文件中判断是否有待爬取番剧
     else:
         url_from_text = get_url_delete_url(settings.SPIDER_TEXT)
         if url_from_text:
             start_urls.append(url_from_text)
         else:
-            print("爬取.txt文件中没有待爬取的url！")
+            print("folkCommentUrl.txt文件中没有待爬取的url！")
 
     # 初始化mysql连接并返回
     mysqlHost = settings.MYSQL_HOST
@@ -137,15 +137,15 @@ class bzhan_comment(scrapy.Spider):
                             allUrl = f.read().split('\n')[0:-1]
                             # 该url已经爬取过了
                             if url in allUrl:
-                                # 判断爬取.txt文件中是否有待爬取的
+                                # 判断folkCommentUrl.txt文件中是否有待爬取的
                                 url_from_text = get_url_delete_url(settings.SPIDER_TEXT)
                                 if url_from_text:
                                     url = url_from_text
                                 else:
                                     flag += 1
-                # 这个番剧已经爬取完毕，需要查看爬取.txt中是否含有下一个待爬取的番剧
+                # 这个番剧已经爬取完毕，需要查看folkCommentUrl.txt中是否含有下一个待爬取的番剧
                 else:
-                    # 判断爬取.txt文件中是否有待爬取的
+                    # 判断folkCommentUrl.txt文件中是否有待爬取的
                     url_from_text = get_url_delete_url(settings.SPIDER_TEXT)
                     if url_from_text:
                         url = url_from_text
@@ -158,7 +158,7 @@ class bzhan_comment(scrapy.Spider):
                     f.write(url + '\n')
                 yield scrapy.Request(url, callback=self.parse, dont_filter=True)
             else:
-                print('重复爬取并且爬取.txt文件中没有待爬取的url！')
+                print('重复爬取并且folkCommentUrl.txt文件中没有待爬取的url！')
                 self.mongoTomysql.saveDatatomysql()
         except Exception as e:
             print(e)

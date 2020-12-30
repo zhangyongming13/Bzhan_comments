@@ -16,8 +16,7 @@ BOT_NAME = 'Bzhan_comments'
 SPIDER_MODULES = ['Bzhan_comments.spiders']
 NEWSPIDER_MODULE = 'Bzhan_comments.spiders'
 
-
-SPIDER_TEXT = '爬取.txt'
+SPIDER_TEXT = 'folkCommentUrl.txt'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'Bzhan_comments (+http://www.yourdomain.com)'

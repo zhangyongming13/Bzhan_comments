@@ -27,7 +27,7 @@ class saveLinkSpiderTxt(object):
 
     def saveDatas(self):
         """
-        将获取到的未爬取番剧的数据（title和comment入口url）写入到爬取.txt中，方便爬取。
+        将获取到的未爬取番剧的数据（title和comment入口url）写入到folkCommentUrl.txt中，方便爬取。
         :return: None
         """
         if self.linkDatas:
