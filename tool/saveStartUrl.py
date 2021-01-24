@@ -1,5 +1,5 @@
 import pymysql
-from Bzhan_comments import settings
+from tool.GetDataFromEnv import get_data_from_env
 
 
 class SaveStartUrl(object):
@@ -9,7 +9,9 @@ class SaveStartUrl(object):
     def __init__(self):
         self.result = [] # 用来保存读取的爬取路径的数据
         # 初始化mysql链接
-        self.connections = pymysql.connect(host=settings.MYSQL_HOST, user=settings.MYSQL_USER, passwd=settings.MYSQL_PASSWD, db=settings.MYSQL_DB)
+        data_dict = get_data_from_env()
+        self.connections = pymysql.connect(host=data_dict['MYSQL_HOST'], user=data_dict['MYSQL_USER'],
+                                           passwd=data_dict['MYSQL_PASSWD'], db=data_dict['MYSQL_DB'])
         self.cursor = self.connections.cursor()
 
     def getStartUrlData(self, startUrlPath):

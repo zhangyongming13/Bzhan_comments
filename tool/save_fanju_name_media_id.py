@@ -1,5 +1,5 @@
 import pymysql
-from Bzhan_comments import settings
+from tool.GetDataFromEnv import get_data_from_env
 
 
 # 从文本文件中读取media_name和media_id数据并写入mysql数据库
@@ -8,10 +8,11 @@ class SaveNameMediaIdToMysql():
         """
         初始化mysql连接并返回
         """
-        mysqlHost = settings.MYSQL_HOST
-        mysqlUser = settings.MYSQL_USER
-        mysqlPasswd = settings.MYSQL_PASSWD
-        mysqlDb = settings.MYSQL_DB
+        data_dict = get_data_from_env()
+        mysqlHost = data_dict['MYSQL_HOST']
+        mysqlUser = data_dict['MYSQL_USER']
+        mysqlPasswd = data_dict['MYSQL_PASSWD']
+        mysqlDb = data_dict['MYSQL_DB']
         self.connection = pymysql.connect(host=mysqlHost, user=mysqlUser, passwd=mysqlPasswd, db=mysqlDb)
         self.cursor = self.connection.cursor()
 
@@ -49,5 +50,5 @@ class SaveNameMediaIdToMysql():
 
 if __name__ == '__main__':
     save_name_media_id_to_mysql = SaveNameMediaIdToMysql()
-    save_name_media_id_to_mysql.get_data(settings.SPIDER_TEXT)
+    save_name_media_id_to_mysql.get_data('folkCommentUrl.txt')
     save_name_media_id_to_mysql.sava_to_mysql()

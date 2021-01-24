@@ -1,18 +1,20 @@
 import pymongo
 import pymysql
-from Bzhan_comments import settings
+# pycharm误报不用处理
+from GetDataFromEnv import get_data_from_env
 
 
 class mongoTomysql():
     def __init__(self):
         # 初始化mongodb连接并返回
-        mongoHost = settings.MONGODB_HOST
-        mongoport = settings.MONGODB_PORT
-        mongoDbname = settings.MONGODB_DBNAME
-        mongoAuthDb = settings.MONGODB_AUTHDB
-        mongoUser = settings.MONGODB_USER
-        mongoPasswd = settings.MONGODB_PASSWD
-        mongoSheetname = settings.MONGODB_SHEETNAME_1
+        data_dict = get_data_from_env()
+        mongoHost = data_dict['MONGODB_HOST']
+        mongoport = int(data_dict['MONGODB_PORT'])
+        mongoDbname = data_dict['MONGODB_DBNAME']
+        mongoAuthDb = data_dict['MONGODB_AUTHDB']
+        mongoUser = data_dict['MONGODB_USER']
+        mongoPasswd = data_dict['MONGODB_PASSWD']
+        mongoSheetname = data_dict['MONGODB_SHEETNAME_1']
         mongo_client = pymongo.MongoClient(host=mongoHost, port=mongoport)
         mongo_db = mongo_client[mongoAuthDb]
         mongo_db.authenticate(mongoUser, mongoPasswd)
@@ -39,10 +41,11 @@ class mongoTomysql():
             dataList.append(temp)
         print('%s条数据即将写入mysql数据库！' % len(dataList))
         # 初始化mysql连接并返回
-        mysqlHost = settings.MYSQL_HOST
-        mysqlUser = settings.MYSQL_USER
-        mysqlPasswd = settings.MYSQL_PASSWD
-        mysqlDb = settings.MYSQL_DB
+        data_dict = get_data_from_env()
+        mysqlHost = data_dict['MYSQL_HOST']
+        mysqlUser = data_dict['MYSQL_USER']
+        mysqlPasswd = data_dict['MYSQL_PASSWD']
+        mysqlDb = data_dict['MYSQL_DB']
         connection = pymysql.connect(host=mysqlHost, user=mysqlUser, passwd=mysqlPasswd, db=mysqlDb)
         cursor = connection.cursor()
         try:

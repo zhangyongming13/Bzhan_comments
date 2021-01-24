@@ -2,8 +2,8 @@ import requests
 import time
 import random
 import pymysql
+from tool.GetDataFromEnv import get_data_from_env
 from fake_useragent import UserAgent
-from Bzhan_comments import settings
 
 
 # 获取B站所有的番剧信息，然后存储到Mysql数据库
@@ -17,8 +17,9 @@ class GetFanJuData(object):
         self.result = []
 
         # 初始化mysql链接
-        self.connections = pymysql.connect(host=settings.MYSQL_HOST, user=settings.MYSQL_USER,
-                                           passwd=settings.MYSQL_PASSWD, db=settings.MYSQL_DB)
+        data_dict = get_data_from_env()
+        self.connections = pymysql.connect(host=data_dict['MYSQL_HOST'], user=data_dict['MYSQL_USER'],
+                                           passwd=data_dict['MYSQL_PASSWD'], db=data_dict['MYSQL_DB'])
         self.cursor = self.connections.cursor()
 
     def save_data(self):

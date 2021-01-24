@@ -3,17 +3,18 @@ import pymysql
 import jieba
 import numpy
 import math
-from Bzhan_comments import settings
+from tool.GetDataFromEnv import get_data_from_env
 from PIL import Image
 from wordcloud import WordCloud, ImageColorGenerator
 
 
 class Analycis():
     def __init__(self):
-        host = settings.MONGODB_HOST
-        port = settings.MONGODB_PORT
-        db_name = settings.MONGODB_DBNAME
-        sheet_name_1 = settings.MONGODB_SHEETNAME_1
+        data_dict = get_data_from_env()
+        host = data_dict['MONGODB_HOST']
+        port = int(data_dict['MONGODB_PORT'])
+        db_name = data_dict['MONGODB_DBNAME']
+        sheet_name_1 = data_dict['MONGODB_SHEETNAME_1']
 
         # 初始化mongodb连接并返回
         mongo_client = pymongo.MongoClient(host=host, port=port)
@@ -21,10 +22,10 @@ class Analycis():
         self.mongo_object_1 = mongo_db[sheet_name_1]
 
         # 初始化mysql连接并返回
-        mysqlHost = settings.MYSQL_HOST
-        mysqlUser = settings.MYSQL_USER
-        mysqlPasswd = settings.MYSQL_PASSWD
-        mysqlDb = settings.MYSQL_DB
+        mysqlHost = data_dict['MYSQL_HOST']
+        mysqlUser = data_dict['MYSQL_USER']
+        mysqlPasswd = data_dict['MYSQL_PASSWD']
+        mysqlDb = data_dict['MYSQL_DB']
         self.connection = pymysql.connect(host=mysqlHost, user=mysqlUser, passwd=mysqlPasswd, db=mysqlDb)
         self.cursor = self.connection.cursor()
 
