@@ -2,4 +2,4 @@ fake-useragent==0.1.11
 pymongo==3.11.2
 PyMySQL==0.10.1
 requests==2.25.1
-Scrapy==2.4.1
+Scrapy==2.6.0
